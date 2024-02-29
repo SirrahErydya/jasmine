@@ -203,7 +203,7 @@ class Hipster:
                 + "', "
                 + "'"
                 + self.hipster_url
-                + "/"
+                + "/web/"
                 + self.title
                 + "/"
                 + base_folder
@@ -542,7 +542,7 @@ output_size=512,
 if __name__ == "__main__":
     data_path = "/home/kollasfa/_DATA/tng-example/tng100-1_example_data/cutouts"
     catalog_path = "/home/kollasfa/_DATA/tng-example/tng100-1_example_data/catalog.csv"
-    base_path = '/home/kollasfa/Promotion/HiPSter3D'
+    base_path = '/home/kollasfa/jasmine/web'
     title = 'tng-test'
     hipster = Hipster(output_folder=base_path, title=title, max_order=3, crop_size=350, catalog_file=catalog_path)
     hipster.make_hips_hierarchy(data_path)
