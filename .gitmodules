@@ -1,0 +1,3 @@
+[submodule "aladin-lite"]
+	path = aladin-lite
+	url = git@github.com:SirrahErydya/aladin-lite.git
