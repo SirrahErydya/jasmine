@@ -1,6 +1,7 @@
 web/
 public/
-
+.idea/
+package-lock.json
 # Created by https://www.toptal.com/developers/gitignore/api/python,pycharm,jupyternotebooks,rust,jetbrains,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,pycharm,jupyternotebooks,rust,jetbrains,node
 
