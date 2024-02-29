@@ -29,7 +29,7 @@ controls.enableDamping = true
 function create_point_cloud(ply_path) {
     let material = new THREE.PointsMaterial({
         vertexColors: true,
-        map: new THREE.TextureLoader().load( "public/textures/dot_o.png" ),
+        map: new THREE.TextureLoader().load( "/textures/dot_o.png" ),
         alphaTest: 0.5,
         transparent: true,
         opacity: 1.,
@@ -42,7 +42,7 @@ function create_point_cloud(ply_path) {
     });
 }
 
-create_point_cloud('../public/clouds/galaxy.ply')
+create_point_cloud('/clouds/galaxy.ply')
 
 const stats = new Stats()
 document.body.appendChild(stats.dom)
