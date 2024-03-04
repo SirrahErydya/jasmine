@@ -1,0 +1,17 @@
+body {
+    margin:0;
+    padding:0;
+    display: inline-block;
+}
+
+#aladin-lite-div {
+    width:49vw;
+    height:90vh;
+    float: left;
+}
+
+#point-cloud-view {
+    width: 49vw;
+    height: 90vh;
+    float: right;
+}
