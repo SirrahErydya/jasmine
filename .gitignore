@@ -1,5 +1,4 @@
-survey/
-public/
+surveys/
 .idea/
 *.ply
 package-lock.json

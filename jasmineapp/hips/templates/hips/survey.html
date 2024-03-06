@@ -4,7 +4,7 @@
     <meta name='description' content='custom HiPS of tng-test'>
     <meta charset='utf-8'>'
     <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no'>
-    <title>TNG Point Cloud Exploration</title>
+    <title>{{ survey.name }}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'hips/style.css' %}">
     <script type="importmap">
@@ -28,8 +28,8 @@
         var aladin;
         A.init.then(() => {
             aladin = A.aladin('#aladin-lite-div');
-            aladin.setImageSurvey(aladin.createImageSurvey('tng-test',
-                'sphere projection of data from tng-test', '../../static/hips/survey/tng-test/projection',
+            aladin.setImageSurvey(aladin.createImageSurvey('{{ survey.name }}',
+                'sphere projection of data from {{ survey.name }}', '/static/surveys/{{ survey.name }}/survey',
                 'equatorial', 3, {imgFormat: 'jpg'}));
             aladin.setFoV(180.0);
             aladin.on('mouseMove', function (e) {

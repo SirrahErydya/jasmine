@@ -24,6 +24,16 @@ body {
     height: 50vh;
 }
 
+.lander .surveys a:link,  .lander .surveys a:active, .lander .surveys a:visited {
+    color:  #003063;
+    text-decoration: none;
+}
+
+.lander .surveys a:hover {
+    color: #004f9f;
+    text-decoration: none;
+}
+
 .lander .create-survey {
     margin-right: 10vw;
     width: 30vw;
