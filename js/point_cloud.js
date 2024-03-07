@@ -26,9 +26,8 @@ controls.enableDamping = true
 
 
 
-
-
-function create_point_cloud(ply_path) {
+export function draw_point_cloud(ply_path) {
+    clear_scene()
     let material = new THREE.PointsMaterial({
         vertexColors: true,
         map: new THREE.TextureLoader().load( "/textures/dot_o.png" ),
@@ -42,9 +41,14 @@ function create_point_cloud(ply_path) {
         let mesh = new THREE.Points(geometry, material)
         scene.add(mesh)
     });
+    animate()
 }
 
-create_point_cloud('/surveys/tng-test/Norder0/Dir0/Ncloud0.ply')
+function clear_scene() {
+    while(scene.children.length > 0){
+        scene.remove(scene.children[0]);
+    }
+}
 
 const stats = new Stats()
 document.body.appendChild(stats.dom)
@@ -63,13 +67,10 @@ function onWindowResize() {
 function animate() {
     requestAnimationFrame(animate)
     controls.update()
-    render()
+    renderer.render(scene, camera)
     stats.update()
 }
 
-function render() {
-    renderer.render(scene, camera)
-}
 
 animate()
 

@@ -547,4 +547,5 @@ if __name__ == "__main__":
     hipster = Hipster(output_folder=base_path, title=title, max_order=3, crop_size=350, catalog_file=catalog_path)
     hipster.make_hips_hierarchy(data_path)
     hipster.create_hips_properties('projection')
+    healpy.ang2pix(0, 90, 90)
     hipster.create_allsky()

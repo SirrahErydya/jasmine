@@ -12,15 +12,6 @@
     <div id='aladin-lite-div'></div>
     <div id='point-cloud-view'></div>
     <script type='text/javascript' src='http://localhost:5173/aladin-lite/dist/aladin.umd.cjs' charset='utf-8'></script>
-    <script type='text/javascript'>
-        var aladin;
-        A.init.then(() => {
-            aladin = A.aladin('#aladin-lite-div');
-            aladin.setImageSurvey(aladin.createImageSurvey('tng-test',
-                'sphere projection of data from tng-test', 'http://localhost:5173/surveys/tng-test',
-                'equatorial', 3, {imgFormat: 'jpg'}));
-            aladin.setFoV(180.0);
-        });
-    </script>
+    <script type='module' src="js/jasmine.js"></script>
 </body>
 </html>
