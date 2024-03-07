@@ -8,7 +8,7 @@ import {OrbitControls} from "three/addons";
  * Setup
  */
 const window_x = window.innerWidth*0.5
-const window_y = window.innerHeight*0.9
+const window_y = window.innerHeight*0.85
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75,
     window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -44,7 +44,7 @@ export function draw_point_cloud(ply_path) {
     animate()
 }
 
-function clear_scene() {
+export function clear_scene() {
     while(scene.children.length > 0){
         scene.remove(scene.children[0]);
     }
@@ -57,14 +57,14 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     const window_x = window.innerWidth*0.5
-    const window_y = window.innerHeight*0.9
+    const window_y = window.innerHeight*0.85
     renderer.setSize(window_x, window_y)
     render()
 }
 
 
 
-function animate() {
+export function animate() {
     requestAnimationFrame(animate)
     controls.update()
     renderer.render(scene, camera)

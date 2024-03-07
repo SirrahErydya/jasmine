@@ -3,6 +3,8 @@ import * as pc from "/js/point_cloud"
 
 let aladin;
 let current_hp_index;
+let change_3d_view = false;
+const infotext = document.getElementById('preview-status')
 
 const index_changed_event = new Event("indexChanged")
 
@@ -34,5 +36,19 @@ A.init.then(() => {
 });
 
 document.addEventListener('indexChanged', ()=>{
-    pc.draw_point_cloud('/surveys/tng-test/Norder0/Dir0/Ncloud0.ply')
+    if(change_3d_view) {
+        pc.draw_point_cloud('/surveys/tng-test/Norder0/Dir0/Ncloud0.ply')
+        infotext.innerText = "3D preview of Point Cloud at Healpix Index " + current_hp_index;
+    }
+})
+
+document.addEventListener('keypress', () => {
+    if(change_3d_view) {
+        change_3d_view = false;
+    } else {
+        change_3d_view = true;
+        infotext.innerText = "3D preview is activated"
+        pc.clear_scene()
+        pc.animate()
+    }
 })
