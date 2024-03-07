@@ -58,6 +58,6 @@ export default defineConfig({
         },
     },
     server: {
-        open: '/examples/survey.html',
+        open: '/examples/index.html',
     },
 });

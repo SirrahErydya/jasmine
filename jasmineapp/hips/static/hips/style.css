@@ -3,59 +3,6 @@ body {
     padding:0;
     display: inline-block;
 }
-.lander {
-    background-color: #003063;
-    color: white;
-    text-align: center;
-    margin: 20px;
-    padding: 20px;
-    overflow: hidden;
-    font-family: Roboto, sans-serif;
-    display: inline-block;
-}
-
-.lander .surveys {
-    width: 30vw;
-    float: left;
-    background-color: white;
-    color: black;
-    padding: 20px;
-    margin-left: 10vw;
-    height: 50vh;
-}
-
-.lander .create-survey {
-    margin-right: 10vw;
-    width: 30vw;
-    float: right;
-    background-color: white;
-    color: black;
-    padding: 20px;
-    height: 50vh;
-}
-
-.lander .create-survey form {
-    text-align: left;
-    margin-left: 20px;
-}
-
-.lander .create-survey table {
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-
-.lander input::file-selector-button, .lander .button {
-    background-color: #003063;
-    color: white;
-    padding: 5px;
-    box-shadow: none;
-    border: none;
-}
-
-.lander input::file-selector-button:hover, .lander .button:hover {
-    background-color: #004f9f;
-    cursor: pointer;
-}
 
 #aladin-lite-div {
     width:49vw;
