@@ -1,10 +1,11 @@
 import os.path
 
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
-from hips.models import Survey
+from hips.models import Survey, DataPoint
 from hips import hipster3d
+import json
 
 
 # Create your views here.
@@ -25,6 +26,7 @@ def survey(request, survey_id):
     }
     return HttpResponse(template.render(context, request))
 
+
 def create_survey(request):
     survey_name = request.POST['survey-name']
     survey_description = request.POST['survey-descr']
@@ -36,4 +38,8 @@ def create_survey(request):
     return survey(request, survey.id)
 
 
+def get_datapoint(request):
+    data_id = json.loads(request.body)['id']
+    dp = DataPoint.objects.get(id=data_id)
+    return JsonResponse({'model_path': dp.model_3d.path, 'success': True})
 

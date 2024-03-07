@@ -69,6 +69,30 @@ function render() {
 
 animate()
 
+function request_prototypes(proto_ids) {
+    var data = JSON.stringify({ 'protos': proto_ids});
+    var csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+        }
+    });
+    $.ajax({
+        url: '/som/get_protos',
+        data: data,
+        dataType: 'json',
+        method: 'POST',
+        success: function (data) {
+            if (data.success) {
+                selected_prototypes = data.protos;
+            }
+        },
+        async: false
+      });
+    console.log(selected_prototypes);
+}
+
+
 
 
 
