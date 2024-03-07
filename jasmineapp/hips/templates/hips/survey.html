@@ -23,42 +23,17 @@
 
     <div id='aladin-lite-div'></div>
     <div id='point-cloud-view'></div>
-    {% csrf_token %}
-    <script type='text/javascript' data-surveyname="{{ survey.name }}">
-        /*function get_hovered_datapoint(id) {
-            const csrf_token_name = "csrfmiddlewaretoken";
-            const csrf_token = $('input[name="'+csrf_token_name+'"]').attr('value');
-            $.ajaxSetup({
-                beforeSend: function(xhr) {
-                    xhr.setRequestHeader("X-CSRFToken", token);
-                }
-            });
-            const data = JSON.stringify({'id': id})
-            $.ajax({
-                url: '/hips/get_datapoint',
-                data: data,
-                dataType: 'json',
-                method: 'POST',
-                success: function (data) {
-                    if (data.success) {
-                        alert("Success!!")
-                    }
-                }
-              });
-        }*/
 
+    <script type='text/javascript'>
         var aladin;
-        const data = document.currentScript.dataset;
-        const survey_name = data.surveyname;
         A.init.then(() => {
             aladin = A.aladin('#aladin-lite-div');
-            aladin.setImageSurvey(aladin.createImageSurvey(survey_name,
-                'sphere projection of data from ' + survey_name, '/static/surveys/' + survey_name + '/survey',
+            aladin.setImageSurvey(aladin.createImageSurvey('{{ survey.name }}',
+                'sphere projection of data from {{ survey.name }}', '/static/surveys/{{ survey.name }}/survey',
                 'equatorial', 3, {imgFormat: 'jpg'}));
             aladin.setFoV(180.0);
             aladin.on('mouseMove', function (e) {
                 //console.log(aladin.view.location.$div[0].innerText)
-                //get_hovered_datapoint(0)
             })
             aladin.on('zoomChanged', function(e) {
                 console.log(aladin.view.wasm.getNOrder())
