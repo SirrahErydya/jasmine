@@ -1,5 +1,5 @@
-web/
-public/
+surveys/
+*.ply
 .idea/
 package-lock.json
 # Created by https://www.toptal.com/developers/gitignore/api/python,pycharm,jupyternotebooks,rust,jetbrains,node

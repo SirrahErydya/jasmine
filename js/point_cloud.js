@@ -7,6 +7,8 @@ import {OrbitControls} from "three/addons";
 /**
  * Setup
  */
+const window_x = window.innerWidth*0.5
+const window_y = window.innerHeight*0.9
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75,
     window.innerWidth / window.innerHeight, 0.1, 1000 );
@@ -15,7 +17,7 @@ camera.position.z = 120
 const renderer = new THREE.WebGLRenderer({
     antialias: true
 });
-renderer.setSize( window.innerWidth*0.5, window.innerHeight );
+renderer.setSize(window_x , window_y );
 const container = document.getElementById("point-cloud-view")
 container.appendChild( renderer.domElement );
 
@@ -42,7 +44,7 @@ function create_point_cloud(ply_path) {
     });
 }
 
-create_point_cloud('/clouds/galaxy.ply')
+create_point_cloud('/surveys/tng-test/Norder0/Dir0/Ncloud0.ply')
 
 const stats = new Stats()
 document.body.appendChild(stats.dom)
@@ -50,7 +52,9 @@ window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
-    renderer.setSize(window.innerWidth, window.innerHeight)
+    const window_x = window.innerWidth*0.5
+    const window_y = window.innerHeight*0.9
+    renderer.setSize(window_x, window_y)
     render()
 }
 
