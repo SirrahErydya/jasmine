@@ -15,21 +15,14 @@
         </p>
         <div class="surveys">
             <h2>Explore</h2>
-            {% for survey in surveys %}
-                <a href="{% url 'hips:survey' survey_id=survey.id %}">{{ survey.name }}</a> <br/>
-            {% endfor %}
         </div>
         <div class="create-survey">
             <h2>Create survey</h2>
-            <form id="create-survey-form" action="{% url 'hips:create_survey' %}" method="post"
-                          enctype="multipart/form-data" >
-                {% csrf_token %}
+            <form>
                 <label for="survey-name">Survey name</label><br/>
                 <input type="text" id="survey-name" name="survey-name"/><br/>
                 <label for="survey-descr">Description:</label><br/>
                 <input id='survey-descr' type="text" name="survey-descr"  maxlength="200"/><br/>
-                <label for="max-order">Maximum HiPS order</label><br/>
-                <input id='max-order' name='max-order' type="number" value="1"><br/>
                 <table>
                     <tr>
                         <td>Images</td>

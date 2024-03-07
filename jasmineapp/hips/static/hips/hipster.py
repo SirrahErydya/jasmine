@@ -1,8 +1,9 @@
 import glob
 import math
 import os
-import pickle
 from datetime import datetime
+from astropy.io.votable import writeto
+from astropy.table import Table
 from pathlib import Path
 from shutil import rmtree
 
@@ -11,15 +12,10 @@ import numpy as np
 import torch
 from PIL import Image
 from matplotlib import pyplot as plt
+import pandas as pd
+import torchvision.transforms.functional as functional
 from skimage import io
 import torchvision.transforms.v2 as transforms
-import open3d as o3d
-from matplotlib import colors as c
-from matplotlib import cm
-import pandas as pd
-import zipfile
-from jasmineapp.settings import BASE_DIR
-from hips.models import Survey, DataPoint
 
 
 class Hipster:
@@ -41,9 +37,6 @@ class Hipster:
         catalog_file: str = "catalog.csv",
         votable_file: str = "catalog.vot",
         hipster_url: str = "http://localhost:8000",
-        survey_folder: str = "survey",
-        pointcloud_folder: str = "pointclouds",
-        cutout_folder: str = 'cutouts'
     ):
         """Initializes the Hipster
 
@@ -77,30 +70,27 @@ class Hipster:
         self.crop_size = crop_size
         self.output_size = 512
         self.distortion_correction = distortion_correction
-        self.catalog_file = catalog_file
-        self.votable_file = votable_file
+        self.catalog_file = self.title_folder / Path(catalog_file)
+        self.votable_file = self.title_folder / Path(votable_file)
         self.hipster_url = hipster_url
-        self.survey_folder = survey_folder
-        self.pointcloud_folder = pointcloud_folder
-        self.cutout_folder = cutout_folder
 
         self.title_folder.mkdir(parents=True, exist_ok=True)
 
-    def check_folders(self, folder):
+    def check_folders(self, base_folder):
         """Checks whether the base folder exists and deletes it after prompting for user input
 
         Args:
             base_folder (String): The base folder to check.
         """
-        path = os.path.join(self.output_folder, self.title, folder)
+        path = os.path.join(self.output_folder, self.title, base_folder)
         if os.path.exists(path):
             answer = input("path " + str(path) + ", delete? [y],n")
             if answer == "n":
                 exit(1)
             else:
-                rmtree(os.path.join(self.output_folder, self.title, folder))
+                rmtree(os.path.join(self.output_folder, self.title, base_folder))
 
-    def create_folders(self):
+    def create_folders(self, base_folder):
         """Creates all folders and sub-folders to store the HiPS tiles.
 
         Args:
@@ -111,13 +101,11 @@ class Hipster:
             os.mkdir(self.output_folder)
         if not os.path.exists(os.path.join(self.output_folder, self.title)):
             os.mkdir(os.path.join(self.output_folder, self.title))
-        os.mkdir(os.path.join(self.output_folder, self.title, self.survey_folder))
-        os.mkdir(os.path.join(self.output_folder, self.title, self.pointcloud_folder))
-        os.mkdir(os.path.join(self.output_folder, self.title, self.cutout_folder))
+        os.mkdir(os.path.join(self.output_folder, self.title, base_folder))
         for i in range(self.max_order + 1):
             os.mkdir(
                 os.path.join(
-                    self.output_folder, self.title, self.survey_folder, "Norder" + str(i)
+                    self.output_folder, self.title, base_folder, "Norder" + str(i)
                 )
             )
             for j in range(int(math.floor(12 * 4**i / 10000)) + 1):
@@ -125,13 +113,13 @@ class Hipster:
                     os.path.join(
                         self.output_folder,
                         self.title,
-                        self.survey_folder,
+                        base_folder,
                         "Norder" + str(i),
                         "Dir" + str(j * 10000),
                     )
                 )
 
-    def create_hips_properties(self):
+    def create_hips_properties(self, base_folder):
         """Generates the properties file that contains the meta-information of the HiPS tiling.
 
         Args:
@@ -139,7 +127,7 @@ class Hipster:
         """
         print("creating meta-data:")
         with open(
-            os.path.join(self.output_folder, self.title, self.survey_folder, "properties"),
+            os.path.join(self.output_folder, self.title, base_folder, "properties"),
             "w",
             encoding="utf-8",
         ) as output:
@@ -167,7 +155,7 @@ class Hipster:
 
     def create_allsky(self, dir_id=0, edge_width=64, extension="jpg"):
         print("Create allsky images ...")
-        data_directory = os.path.join(self.title_folder, self.survey_folder)
+        data_directory = os.path.join(self.title_folder, 'projection')
         for order in range(self.max_order + 1):
             width = math.floor(math.sqrt(12 * 4 ** order))
             height = math.ceil(12 * 4 ** order / width)
@@ -200,19 +188,15 @@ class Hipster:
             image.save(data_directory / Path("Norder" + str(order)) / Path("Allsky.jpg"))
         print("Create allsky images ... done.")
 
-    def make_hips_hierarchy(self, cutout_zip, pointcloud_zip, survey, circle=True):
-        self.check_folders(self.survey_folder)
-        self.check_folders(self.pointcloud_folder)
-        self.check_folders(self.cutout_folder)
-        self.create_folders()
-        self.create_hips_properties()
+    def make_hips_hierarchy(self, data_path, circle=True):
+        self.check_folders("projection")
+        self.create_folders("projection")
+        self.create_hips_properties("projection")
+        self.create_index_file("projection")
 
-        cat = pd.read_csv(self.catalog_file)
-        cutouts = zipfile.ZipFile(cutout_zip, "r")
-        pointclouds = zipfile.ZipFile(pointcloud_zip, "r")
-
+        dataset = get_data_np(data_path)
         ds_idx = 0
-        dataset_length = len(cat)
+        dataset_length = dataset.shape[0]
 
         print("Creating Healpix tiles...")
         for order in range(self.max_order+1):
@@ -221,31 +205,7 @@ class Hipster:
 
             for pix in range(n_pix):
                 if circle or ds_idx < dataset_length:
-                    i = ds_idx % dataset_length
-                    current_id = cat['id'][i]
-                    cx = cat['x'][i]
-                    cy = cat['y'][i]
-                    cz = cat['z'][i]
-                    cutout = cutouts.open("{0}.png".format(current_id))
-                    cloud = pointclouds.open("{0}.pkl".format(current_id))
-                    data = np.array(Image.open(cutout))[:,:,:3]
-                    cloud = get_o3d_pointcloud(cloud, np.array([cx, cy, cz]))
-                    cloudfilename = os.path.join(self.output_folder, self.title, "pointclouds",
-                                                 "{0}.ply".format(current_id))
-                    o3d.io.write_point_cloud(cloudfilename, cloud)
-                    data_model = DataPoint(
-                        survey=survey,
-                        identifier=current_id,
-                        healpix_idx=pix,
-                    )
-                    data_model.model_3d = cloudfilename
-                    img = Image.fromarray((data.astype(np.uint8)))
-                    img_path = os.path.join(self.output_folder, self.title, self.cutout_folder,
-                                            "{0}.png".format(current_id))
-                    img.save(img_path)
-                    data_model.cutout = img_path
-                    data_model.save()
-
+                    data = dataset[ds_idx % dataset_length]
                     ds_idx += 1
                 else:
                     data = np.ones((3, self.output_size, self.output_size))
@@ -253,10 +213,11 @@ class Hipster:
                     data[1] = data[1] * 0.0
                     data[2] = data[2] * 153.0
                     data = np.swapaxes(data, 0, 2)
+
                 image = Image.fromarray((data.astype(np.uint8)))
                 image = crop_center(image, self.crop_size, self.crop_size)
                 image = image.resize((512, 512))
-                image.save(os.path.join(self.output_folder, self.title, self.survey_folder, "Norder" + str(order),
+                image.save(os.path.join(self.output_folder, self.title, "projection", "Norder" + str(order),
                                         "Dir" + str(int(math.floor(pix / 10000)) * 10000), "Npix" + str(pix) + ".jpg"))
         print("...done.")
 
@@ -291,68 +252,13 @@ def crop_center(img, cropx, cropy):
     # Crop the center of the image
     return img.crop((left, top, right, bottom))
 
-
-def circle_mask(coords, values, radius=100.):
-    x = coords[:,0]
-    y = coords[:, 1]
-    z = coords[:, 2]
-    new_x, new_y, new_z, new_values = [], [], [], []
-    for i in range(len(values)):
-        print(i)
-        distance = np.sqrt((x[i] ** 2) + (y[i] ** 2) + (z[i] ** 2))
-        if distance <= radius:
-            new_x.append(x[i])
-            new_y.append(y[i])
-            new_z.append(z[i])
-            new_values.append(values[i])
-    return np.array(new_x), np.array(new_y), np.array(new_z), np.array(new_values)
-
-
-def get_o3d_pointcloud(point_cloud_file, subhalo_center):
-    # Todo: Weird magic number
-    dist_units_kpc = 1.476232654266312
-
-    gas = pickle.load(point_cloud_file)
-    gas_coords = (gas['Coordinates'] - subhalo_center) * dist_units_kpc
-
-    g_pot = gas['Potential']
-    g_pot /= g_pot.mean()
-
-    x, y, z, values = circle_mask(gas_coords, g_pot)
-
-    gas_cloud = o3d.geometry.PointCloud()
-    gas_cloud.points = o3d.utility.Vector3dVector(np.column_stack((x, y, z)))
-
-    cmap = plt.get_cmap('magma')
-    norm = c.Normalize(vmin = values.min(), vmax = values.max())
-    scalar_map = cm.ScalarMappable(norm=norm, cmap=cmap)
-    rgba = scalar_map.to_rgba(values)[:,:3]
-
-    gas_cloud.colors = o3d.utility.Vector3dVector(rgba)
-    return gas_cloud
-
-
-def create_survey(survey_name, survey_description, max_order, image_file, pc_file, catalog):
-    survey_model = Survey(
-        name=survey_name, description=survey_description, catalog=catalog
-    )
-    survey_model.save()
-    outpath = os.path.join(BASE_DIR, 'static', 'surveys')
-    hipster = Hipster(output_folder=outpath, title=survey_name, max_order=max_order, crop_size=350,
-                      catalog_file=catalog)
-    hipster.make_hips_hierarchy(image_file, pc_file, survey_model, circle=True)
-    hipster.create_hips_properties()
-    hipster.create_allsky()
-    return survey_model
-
-
-
+output_size=512,
 if __name__ == "__main__":
     data_path = "/home/kollasfa/_DATA/tng-example/tng100-1_example_data/cutouts"
     catalog_path = "/home/kollasfa/_DATA/tng-example/tng100-1_example_data/catalog.csv"
     base_path = '/home/kollasfa/jasmine/web'
     title = 'tng-test'
-    hipster = Hipster(output_folder=base_path, title=title, max_order=3,  crop_size=350, catalog_file=catalog_path)
+    hipster = Hipster(output_folder=base_path, title=title, max_order=3, crop_size=350, catalog_file=catalog_path)
     hipster.make_hips_hierarchy(data_path)
-    hipster.create_hips_properties()
+    hipster.create_hips_properties('projection')
     hipster.create_allsky()

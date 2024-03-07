@@ -4,15 +4,15 @@ import os
 
 # Create your models here
 def survey_path(instance, filename):
-    return os.path.join('static/surveys/', instance.name, filename)
+    return os.path.join('/static/surveys/', instance.name, filename)
 
 
 def survey_cutout_path(instance, filename):
-    return os.path.join('static/surveys/', instance.name, "cutouts", filename)
+    return os.path.join('/static/surveys/', instance.name, "cutouts", filename)
 
 
 def survey_model_path(instance, filename):
-    return os.path.join('static/surveys/', instance.name, "pointclouds", filename)
+    return os.path.join('/static/surveys/', instance.name, "models", filename)
 
 
 class Survey(models.Model):
