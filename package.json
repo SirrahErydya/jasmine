@@ -3,6 +3,7 @@
     "vite": "^5.1.4"
   },
   "dependencies": {
+    "csvtojson": "^2.0.10",
     "three": "^0.162.0"
   }
 }

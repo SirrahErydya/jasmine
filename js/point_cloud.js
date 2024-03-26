@@ -8,17 +8,18 @@ import {OrbitControls} from "three/addons";
  * Setup
  */
 const window_x = window.innerWidth*0.5
-const window_y = window.innerHeight*0.85
+const window_y = window.innerHeight
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75,
     window.innerWidth / window.innerHeight, 0.1, 1000 );
 camera.position.z = 120
 
 const renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    alpha: true
 });
 renderer.setSize(window_x , window_y );
-const container = document.getElementById("point-cloud-view")
+const container = document.getElementById("jasmine-viewer")
 container.appendChild( renderer.domElement );
 
 const controls = new OrbitControls(camera, renderer.domElement)
@@ -57,9 +58,9 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     const window_x = window.innerWidth*0.5
-    const window_y = window.innerHeight*0.85
+    const window_y = window.innerHeight
     renderer.setSize(window_x, window_y)
-    render()
+    renderer.render(scene, camera)
 }
 
 

@@ -2,30 +2,60 @@ body {
     margin:0;
     padding:0;
     display: inline-block;
-    background-color: #003063;
+    background-color: black;
     font-family: Roboto, sans-serif;
     color: white;
     overflow: hidden;
 }
 
 #aladin-lite-div {
+    position: fixed;
+    top: 0;
+    left: 0;
     width:50vw;
-    height:85vh;
+    height:100vh;
     float: left;
     border: none;
 }
 
-#point-cloud-view {
+#jasmine-viewer {
+    position: fixed;
+    top: 0;
+    left: 50vw;
     width: 50vw;
-    height: 85vh;
+    height: 100vh;
     float: right;
+
+    background-size: contain;
+    background-position: right top;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
 }
 
 .info {
-    position: relative;
-    padding-right: 20px;
+    position: absolute;
+    top: 95vh;
+    right: 5px;
     display: block;
     float: right;
     text-align: right;
+    z-index: 10;
 }
 
+.jasmine-logo {
+    z-index: 10;
+    position: absolute;
+    width: 90px;
+    left: 5px;
+    bottom: 5px;
+}
+
+.jasmine-logo img {
+    width: 100%;
+}
+
+.data-select {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}

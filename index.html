@@ -4,18 +4,26 @@
     <meta name='description' content='custom HiPS of tng-test'>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no'>
-    <title>TNG Point Cloud Exploration</title>
+    <title>Jasmine</title>
+    <script type='text/javascript' src='https://code.jquery.com/jquery-1.9.1.min.js' charset='utf-8'></script>
     <script type="module" src="/js/point_cloud.js"></script>
     <link type="text/css" rel="stylesheet" href="/public/style.css">
 </head>
 <body>
     <div id='aladin-lite-div'></div>
-    <div id='point-cloud-view'></div>
-    <div class="info">
-        <p id="preview-status">3D preview is deactivated</p>
-        <p>Press any key to activate point cloud previews by hovering over the sphere.
-            Press again to lock the current preview.</p>
+    <div id='jasmine-viewer'>
+        <div class="data-select">
+            <label for="datatype">Choose data aspect to display:</label>
+            <select name="datatype" id="datatype">
+                <option value="morphology" selected>Morphology image</option>
+                <option value="gascloud">Gas Potential</option>
+            </select>
+        </div>
+        <div class="jasmine-logo">
+            <img src="/img/jasmine-logo.png"/>
+        </div>
     </div>
+    <div  id="infobox" class="info"></div>
     <script type='text/javascript' src='http://localhost:5173/aladin-lite/dist/aladin.umd.cjs' charset='utf-8'></script>
     <script type='module' src="js/jasmine.js"></script>
 </body>
