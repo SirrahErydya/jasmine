@@ -1,15 +1,18 @@
 import {HealpixIndex} from "../aladin-lite/src/js/libs/healpix";
 import * as pc from "/js/point_cloud"
 import {func} from "three/addons/nodes/code/FunctionNode";
+import * as hdf5 from 'jsfive'
+import csv from "csvtojson";
 
 let aladin;
 let moved_while_pressed = false;
 
-const survey_url = 'http://localhost:5173/surveys/TNG100/'
+const survey_url = 'http://localhost:5173/surveys/TNG100-h2/'
 const model_url = survey_url + 'model'
 const projection_url = survey_url + 'projection'
 const cat_url = survey_url + 'interaction_catalog'
 const cube_url = survey_url + 'data_cube'
+const hierarchy = 1
 
 /* Some HTML Elements */
 const infotext = document.getElementById('infobox')
@@ -45,39 +48,49 @@ A.init.then(() => {
 });
 
 function change_jasmine_view(event) {
-    let order = aladin.view.wasm.getNOrder()
+    let order = aladin.view.wasm.getNOrder() 
     let radec = aladin.pix2world(event.x, event.y)
     let theta =  Math.PI / 2. - radec[1] / 180. * Math.PI;
     let phi = radec[0] / 180. * Math.PI
-    let hp_index = new HealpixIndex(2**order)
-    hp_index.init()
-    let pixel = hp_index.ang2pix_nest(theta, phi)
-
-    let csv_url = cat_url + '/Norder'+ order + '/Dir0/Npix' + pixel + '.tsv';
+    let top_index = new HealpixIndex(2**order)
+    top_index.init()
+    let top_pixel = top_index.ang2pix_nest(theta, phi)
+    let csv_idx = 0
+    if(hierarchy > 0) {
+        let nested_index = new HealpixIndex(2**(order+hierarchy))
+        nested_index.init()
+        csv_idx = nested_index.ang2pix_nest(theta, phi) - 4*top_pixel
+    }
+    let csv_url = cat_url + '/Norder'+ order + '/Dir0/Npix' + top_pixel + '.tsv';
     let dtype = datatype_select.value
-    display_data(csv_url, dtype)
+    display_data(csv_url, dtype, csv_idx)
 }
 
-function display_data(csv_url, cube_side) {
+function display_data(csv_url, cube_side, csv_idx) {
     jasmine_div.style.backgroundImage = "";
     pc.clear_scene()
     fetch(csv_url).then(response => response.text())
         .then(
             data => {
                 let rows = data.split('\n')
-                let sh_id = rows[1].split('\t')[1]
+                let sh_id = rows[csv_idx+1].split('\t')[1]
                 if(cube_side == "gascloud") {
                     display_gascloud(sh_id)
                 } else if(cube_side == "morphology") {
-                    display_image(sh_id)
+                    display_morphology(sh_id)
+                } else if(cube_side == "dm_field") {
+                    display_dm_field(sh_id)
+                } else if(cube_side == "gas_temperature") {
+                    display_gas_temperature(sh_id)
                 }
+
             }
         )
 }
 
 /* Display functions */
 function display_gascloud(subhalo_id) {
-    let data_url = cube_url + "/gasclouds/" + subhalo_id + ".ply"
+    let data_url = cube_url + "/gas_pointclouds/" + subhalo_id + ".ply"
     pc.draw_point_cloud(data_url)
     if("" + subhalo_id == "undefined") {
         infotext.innerText = "No data point in this cell."
@@ -86,8 +99,19 @@ function display_gascloud(subhalo_id) {
     }
 }
 
-function  display_image(subhalo_id) {
-    let data_url = cube_url + "/morphology/" + subhalo_id + ".jpg"
+function display_morphology(subhalo_id) {
+    display_image(cube_url + "/morphology/" + subhalo_id + ".jpg")
+}
+
+function display_dm_field(subhalo_id) {
+    display_image(cube_url + "/dark_matter_fields/" + subhalo_id + ".png")
+}
+
+function display_gas_temperature(subhalo_id) {
+    display_image(cube_url + "/gas_temperature_fields/" + subhalo_id + ".png")
+}
+
+function  display_image(data_url) {
     jasmine_div.style.backgroundImage = "url('" + data_url + "')";
     if("" + subhalo_id == "undefined") {
         infotext.innerText = "No data point in this cell."

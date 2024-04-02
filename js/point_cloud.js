@@ -45,6 +45,10 @@ export function draw_point_cloud(ply_path) {
     animate()
 }
 
+export function draw_star_cloud(coordinates, mass, density, subhalo_center) {
+    const coord_vec = coordinates.map((x, y, z) => THREE.Vector3(x, y, z))
+}
+
 export function clear_scene() {
     while(scene.children.length > 0){
         scene.remove(scene.children[0]);
