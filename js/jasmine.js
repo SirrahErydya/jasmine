@@ -3,9 +3,12 @@ import * as pc from "/js/point_cloud"
 import {func} from "three/addons/nodes/code/FunctionNode";
 import * as hdf5 from 'jsfive'
 import csv from "csvtojson";
+import {sub} from "three/nodes";
 
 let aladin;
 let moved_while_pressed = false;
+let csv_url = ""
+let csv_idx = 0
 
 const survey_url = 'http://localhost:5173/surveys/TNG100-h2/'
 const model_url = survey_url + 'model'
@@ -47,7 +50,8 @@ A.init.then(() => {
 
 });
 
-function change_jasmine_view(event) {
+
+function choose_datapoint(event) {
     let order = aladin.view.wasm.getNOrder() 
     let radec = aladin.pix2world(event.x, event.y)
     let theta =  Math.PI / 2. - radec[1] / 180. * Math.PI;
@@ -55,18 +59,18 @@ function change_jasmine_view(event) {
     let top_index = new HealpixIndex(2**order)
     top_index.init()
     let top_pixel = top_index.ang2pix_nest(theta, phi)
-    let csv_idx = 0
     if(hierarchy > 0) {
         let nested_index = new HealpixIndex(2**(order+hierarchy))
         nested_index.init()
         csv_idx = nested_index.ang2pix_nest(theta, phi) - 4*top_pixel
     }
-    let csv_url = cat_url + '/Norder'+ order + '/Dir0/Npix' + top_pixel + '.tsv';
-    let dtype = datatype_select.value
-    display_data(csv_url, dtype, csv_idx)
+    csv_url = cat_url + '/Norder'+ order + '/Dir0/Npix' + top_pixel + '.tsv';
+    let cube_side = datatype_select.value
+    change_jasmine_view(cube_side)
 }
 
-function display_data(csv_url, cube_side, csv_idx) {
+
+function change_jasmine_view(cube_side) {
     jasmine_div.style.backgroundImage = "";
     pc.clear_scene()
     fetch(csv_url).then(response => response.text())
@@ -100,23 +104,23 @@ function display_gascloud(subhalo_id) {
 }
 
 function display_morphology(subhalo_id) {
-    display_image(cube_url + "/morphology/" + subhalo_id + ".jpg")
+    display_image(cube_url + "/morphology/" + subhalo_id + ".jpg", subhalo_id, "Morphology")
 }
 
 function display_dm_field(subhalo_id) {
-    display_image(cube_url + "/dark_matter_fields/" + subhalo_id + ".png")
+    display_image(cube_url + "/dark_matter_fields/" + subhalo_id + ".png", subhalo_id, "Dark Matter")
 }
 
 function display_gas_temperature(subhalo_id) {
-    display_image(cube_url + "/gas_temperature_fields/" + subhalo_id + ".png")
+    display_image(cube_url + "/gas_temperature_fields/" + subhalo_id + ".png", subhalo_id, "Gas Temperature")
 }
 
-function  display_image(data_url) {
+function  display_image(data_url, subhalo_id, aspect) {
     jasmine_div.style.backgroundImage = "url('" + data_url + "')";
     if("" + subhalo_id == "undefined") {
         infotext.innerText = "No data point in this cell."
     } else {
-        infotext.innerText = "Morphology of galaxy " + subhalo_id;
+        infotext.innerText = aspect + " of galaxy " + subhalo_id;
     }
 }
 
@@ -124,6 +128,11 @@ function  display_image(data_url) {
 // Add an event for the change of the Jasmine view - On right click
 aladin_div.addEventListener("mouseup", function(e) {
     if(e.button === 2) {
-        change_jasmine_view(e)
+        choose_datapoint(e)
     }
+})
+
+datatype_select.addEventListener("change", function(e) {
+    let cube_side = this.value
+    change_jasmine_view(cube_side)
 })
