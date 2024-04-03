@@ -21,18 +21,24 @@ const hierarchy = 1
 const infotext = document.getElementById('infobox')
 const aladin_div = document.getElementById('aladin-lite-div')
 const jasmine_div = document.getElementById('jasmine-viewer')
-const datatype_select = document.getElementById('datatype')
-
+const aladin_layer_radios = document.getElementsByName("aladin-layer-radio")
+const jsm_layer_radios = document.getElementsByName("jasmine-layer-radio")
+let active_jasmine_radio = document.querySelector('input[name="jasmine-layer-radio"]:checked');
 
 
 
 A.init.then(() => {
-    aladin = A.aladin('#aladin-lite-div');
-    let model_survey = aladin.createImageSurvey('TNG100 Model',
-        'a model trained on Illustris data', model_url,
+    aladin = A.aladin('#aladin-lite-div', {
+        "showGotoControl": false,
+        "showLayersControl": false,
+        "showProjectionControl": false,
+        "showFullscreenControl": false
+    });
+    let model_survey = aladin.createImageSurvey('TNG100-99-model',
+        'TNG100-99 Model', model_url,
         'equatorial', 3, {imgFormat: 'jpg'})
-    let projection_survey = aladin.createImageSurvey('TNG100 Projection',
-        'data from Illustris', projection_url,
+    let projection_survey = aladin.createImageSurvey('TNG100-99-projection',
+        'TNG100-99 Morphology Images', projection_url,
         'equatorial', 3, {imgFormat: 'jpg'})
     let prog =  A.catalogHiPS(cat_url, {name: 'Data Points', sourceSize: 8, raField: 'ra', decField: 'dec'});
     let catalog = A.catalogFromURL('http://localhost:5173/surveys/TNG100/catalog.vot', {sourceSize:10, onClick: 'showPopup', color: 'cyan', shape: 'circle', name: 'TNG100'});
@@ -47,8 +53,15 @@ A.init.then(() => {
         let radec = aladin.pix2world(e.x, e.y)
         update_hp_index(radec[0], radec[1], 2**order)
     })*/
+    aladin.on('rightClickMove', function(e) {
+        //e.preventDefault();
+        return false;
+    })
 
 });
+
+
+
 
 
 function choose_datapoint(event) {
@@ -65,13 +78,13 @@ function choose_datapoint(event) {
         csv_idx = nested_index.ang2pix_nest(theta, phi) - 4*top_pixel
     }
     csv_url = cat_url + '/Norder'+ order + '/Dir0/Npix' + top_pixel + '.tsv';
-    let cube_side = datatype_select.value
-    change_jasmine_view(cube_side)
+    change_jasmine_view()
 }
 
 
-function change_jasmine_view(cube_side) {
+function change_jasmine_view() {
     jasmine_div.style.backgroundImage = "";
+    let cube_side = active_jasmine_radio.value;
     pc.clear_scene()
     fetch(csv_url).then(response => response.text())
         .then(
@@ -82,8 +95,8 @@ function change_jasmine_view(cube_side) {
                     display_gascloud(sh_id)
                 } else if(cube_side == "morphology") {
                     display_morphology(sh_id)
-                } else if(cube_side == "dm_field") {
-                    display_dm_field(sh_id)
+                } else if(cube_side == "darkmatter") {
+                    display_dark_matter(sh_id)
                 } else if(cube_side == "gas_temperature") {
                     display_gas_temperature(sh_id)
                 }
@@ -107,7 +120,7 @@ function display_morphology(subhalo_id) {
     display_image(cube_url + "/morphology/" + subhalo_id + ".jpg", subhalo_id, "Morphology")
 }
 
-function display_dm_field(subhalo_id) {
+function display_dark_matter(subhalo_id) {
     display_image(cube_url + "/dark_matter_fields/" + subhalo_id + ".png", subhalo_id, "Dark Matter")
 }
 
@@ -124,6 +137,7 @@ function  display_image(data_url, subhalo_id, aspect) {
     }
 }
 
+/** Event listeners **/
 
 // Add an event for the change of the Jasmine view - On right click
 aladin_div.addEventListener("mouseup", function(e) {
@@ -132,7 +146,18 @@ aladin_div.addEventListener("mouseup", function(e) {
     }
 })
 
-datatype_select.addEventListener("change", function(e) {
-    let cube_side = this.value
-    change_jasmine_view(cube_side)
-})
+// Aladin Layer change
+for(let i=0; i < aladin_layer_radios.length; i++) {
+    aladin_layer_radios[i].addEventListener('change', function(e) {
+        let survey_id = this.value;
+        aladin.setBaseImageLayer(survey_id)
+    })
+}
+
+// Jasmine Layer Change
+for(let i=0; i < jsm_layer_radios.length; i++) {
+    jsm_layer_radios[i].addEventListener('change', function(e) {
+        active_jasmine_radio = this
+        change_jasmine_view()
+    })
+}
