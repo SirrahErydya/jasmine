@@ -96,7 +96,7 @@ function change_jasmine_view() {
                 } else if(cube_side == "morphology") {
                     display_morphology(sh_id)
                 } else if(cube_side == "darkmatter") {
-                    display_dark_matter(sh_id)
+                    display_dmcloud(sh_id)
                 } else if(cube_side == "gas_temperature") {
                     display_gas_temperature(sh_id)
                 }
@@ -113,6 +113,16 @@ function display_gascloud(subhalo_id) {
         infotext.innerText = "No data point in this cell."
     } else {
         infotext.innerText = "3D Visualisation of gas potential emitted by galaxy " + subhalo_id;
+    }
+}
+
+function display_dmcloud(subhalo_id) {
+    let data_url = cube_url + "/dm_pointclouds/" + subhalo_id + ".ply"
+    pc.draw_point_cloud(data_url)
+    if("" + subhalo_id == "undefined") {
+        infotext.innerText = "No data point in this cell."
+    } else {
+        infotext.innerText = "3D Visualisation of dark matter potential emitted by galaxy " + subhalo_id;
     }
 }
 
