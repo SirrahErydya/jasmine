@@ -6,7 +6,6 @@ import csv from "csvtojson";
 import {sub} from "three/nodes";
 
 let aladin;
-let moved_while_pressed = false;
 let csv_url = ""
 let csv_idx = 0
 
@@ -19,46 +18,9 @@ const hierarchy = 1
 
 /* Some HTML Elements */
 const infotext = document.getElementById('infobox')
-const aladin_div = document.getElementById('aladin-lite-div')
 const jasmine_div = document.getElementById('jasmine-viewer')
-const aladin_layer_radios = document.getElementsByName("aladin-layer-radio")
 const jsm_layer_radios = document.getElementsByName("jasmine-layer-radio")
 let active_jasmine_radio = document.querySelector('input[name="jasmine-layer-radio"]:checked');
-
-
-
-A.init.then(() => {
-    aladin = A.aladin('#aladin-lite-div', {
-        "showGotoControl": false,
-        "showLayersControl": false,
-        "showProjectionControl": false,
-        "showFullscreenControl": false
-    });
-    let model_survey = aladin.createImageSurvey('TNG100-99-model',
-        'TNG100-99 Model', model_url,
-        'equatorial', 3, {imgFormat: 'jpg'})
-    let projection_survey = aladin.createImageSurvey('TNG100-99-projection',
-        'TNG100-99 Morphology Images', projection_url,
-        'equatorial', 3, {imgFormat: 'jpg'})
-    let prog =  A.catalogHiPS(cat_url, {name: 'Data Points', sourceSize: 8, raField: 'ra', decField: 'dec'});
-    let catalog = A.catalogFromURL('http://localhost:5173/surveys/TNG100/catalog.vot', {sourceSize:10, onClick: 'showPopup', color: 'cyan', shape: 'circle', name: 'TNG100'});
-    aladin.addCatalog(catalog);
-    aladin.setOverlayImageLayer(model_survey);
-    aladin.setBaseImageLayer(projection_survey);
-    aladin.addCatalog(prog);
-    aladin.setFoV(180.0);
-    /*
-    aladin.on('mouseMove', function (e) {
-        let order = aladin.view.wasm.getNOrder()
-        let radec = aladin.pix2world(e.x, e.y)
-        update_hp_index(radec[0], radec[1], 2**order)
-    })*/
-    aladin.on('rightClickMove', function(e) {
-        //e.preventDefault();
-        return false;
-    })
-
-});
 
 
 
@@ -160,21 +122,10 @@ function  display_image(data_url, subhalo_id, aspect) {
 }
 
 /** Event listeners **/
-
-// Add an event for the change of the Jasmine view - On right click
-aladin_div.addEventListener("mouseup", function(e) {
-    if(e.button === 2) {
-        choose_datapoint(e)
-    }
-})
-
-// Aladin Layer change
-for(let i=0; i < aladin_layer_radios.length; i++) {
-    aladin_layer_radios[i].addEventListener('change', function(e) {
-        let survey_id = this.value;
-        aladin.setBaseImageLayer(survey_id)
+window.addEventListener("message",
+    (e) => {
+        alert("Hello, Human Resources? There was an Event!!")
     })
-}
 
 // Jasmine Layer Change
 for(let i=0; i < jsm_layer_radios.length; i++) {

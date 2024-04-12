@@ -7,13 +7,50 @@ body {
     overflow: hidden;
 }
 
-#aladin-lite-div {
+.menu {
+    display: flex;
+    flex-direction: column;
     position: fixed;
     top: 0;
     left: 0;
-    width:50vw;
+    width: 15vw;
+    padding: 10px;
+}
+
+.menu input {
+    height: 45px;
+    background-color: #424242;
+    font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    color: white;
+    border-radius: 0;
+    border: none;
+}
+
+.modal-buttons {
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    background-color: #424242;
+    color: white;
+    padding: 20px;
+    border: none;
+    font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    cursor: pointer;
+}
+
+.modal-buttons button:hover {
+    background-color: #626262;
+}
+
+
+
+#aladin-lite-div {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width:83vw;
     height:100vh;
-    float: left;
     border: none;
 }
 
@@ -68,16 +105,8 @@ body {
     border-color: white;
     border-radius: 2px;
     padding: 10px;
-}
-
-.jsm-selection-wrapper#aladin-layer-selector {
     top: 0;
-    right: 50vw;
-}
-
-.jsm-selection-wrapper#jasmine-layer-selector {
-    top: 0;
-    left: 50vw;
+    right: 0;
 }
 
 .jsm-select {
@@ -115,7 +144,7 @@ body {
     pointer-events:all;
 }
 
-input {
+.jsm-selection-wrapper input {
     opacity:1;
     position:absolute;
     left:99px;
