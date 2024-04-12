@@ -8,17 +8,18 @@ import {OrbitControls} from "three/addons";
  * Setup
  */
 const window_x = window.innerWidth*0.5
-const window_y = window.innerHeight*0.9
+const window_y = window.innerHeight
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75,
     window.innerWidth / window.innerHeight, 0.1, 1000 );
 camera.position.z = 120
 
 const renderer = new THREE.WebGLRenderer({
-    antialias: true
+    antialias: true,
+    alpha: true
 });
 renderer.setSize(window_x , window_y );
-const container = document.getElementById("point-cloud-view")
+const container = document.getElementById("jasmine-viewer")
 container.appendChild( renderer.domElement );
 
 const controls = new OrbitControls(camera, renderer.domElement)
@@ -26,9 +27,8 @@ controls.enableDamping = true
 
 
 
-
-
-function create_point_cloud(ply_path) {
+export function draw_point_cloud(ply_path) {
+    clear_scene()
     let material = new THREE.PointsMaterial({
         vertexColors: true,
         map: new THREE.TextureLoader().load( "/textures/dot_o.png" ),
@@ -42,9 +42,18 @@ function create_point_cloud(ply_path) {
         let mesh = new THREE.Points(geometry, material)
         scene.add(mesh)
     });
+    animate()
 }
 
-create_point_cloud('/surveys/tng-test/Norder0/Dir0/Ncloud0.ply')
+export function draw_star_cloud(coordinates, mass, density, subhalo_center) {
+    const coord_vec = coordinates.map((x, y, z) => THREE.Vector3(x, y, z))
+}
+
+export function clear_scene() {
+    while(scene.children.length > 0){
+        scene.remove(scene.children[0]);
+    }
+}
 
 const stats = new Stats()
 document.body.appendChild(stats.dom)
@@ -53,23 +62,20 @@ function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
     const window_x = window.innerWidth*0.5
-    const window_y = window.innerHeight*0.9
+    const window_y = window.innerHeight
     renderer.setSize(window_x, window_y)
-    render()
+    renderer.render(scene, camera)
 }
 
 
 
-function animate() {
+export function animate() {
     requestAnimationFrame(animate)
     controls.update()
-    render()
+    renderer.render(scene, camera)
     stats.update()
 }
 
-function render() {
-    renderer.render(scene, camera)
-}
 
 animate()
 

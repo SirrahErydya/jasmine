@@ -4,23 +4,52 @@
     <meta name='description' content='custom HiPS of tng-test'>
     <meta charset='utf-8'>
     <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no'>
-    <title>TNG Point Cloud Exploration</title>
+    <title>Jasmine</title>
+    <script type='text/javascript' src='https://code.jquery.com/jquery-1.9.1.min.js' charset='utf-8'></script>
     <script type="module" src="/js/point_cloud.js"></script>
     <link type="text/css" rel="stylesheet" href="/public/style.css">
 </head>
 <body>
     <div id='aladin-lite-div'></div>
-    <div id='point-cloud-view'></div>
+    <div class="jsm-selection-wrapper" id="aladin-layer-selector" >
+        <span>Select a layer to project on the sphere:</span>
+        <div class="jsm-select" tabindex="1">
+            <input class="jsm-option-value" name="aladin-layer-radio" type="radio"
+                   id="layer-model" value="TNG100-99-model" checked />
+            <label for="layer-model" class="jsm-option">TNG100-99 Model</label>
+            <input class="jsm-option-value" name="aladin-layer-radio" type="radio"
+                   id="layer-projection" value="TNG100-99-projection"/>
+            <label for="layer-projection" class="jsm-option">TNG100-99 Morphology Images</label>
+        </div>
+    </div>
+    <div id='jasmine-viewer'>
+        <div class="jasmine-logo">
+            <img src="/img/jasmine-logo.png"/>
+        </div>
+    </div>
+
+    <div class="jsm-selection-wrapper" id="jasmine-layer-selector">
+        <span>Select a data aspect to inspect:</span>
+        <div class="jsm-select" tabindex="1">
+            <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
+                   id="morphology" value="morphology" checked />
+            <label for="morphology" class="jsm-option">Morphology Image</label>
+            <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
+                   id="gascloud" value="gascloud" />
+            <label for="gascloud" class="jsm-option">Gas Potential</label>
+            <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
+                   id="stars" value="stars" />
+            <label for="stars" class="jsm-option">Stars</label>
+            <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
+                   id="darkmatter" value="darkmatter" />
+            <label for="darkmatter" class="jsm-option">Dark Matter</label>
+            <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
+                   id="gas_temperature" value="gas_temperature" />
+            <label for="gas_temperature" class="jsm-option">Gas Temperature</label>
+        </div>
+    </div>
+    <div  id="infobox" class="info"></div>
     <script type='text/javascript' src='http://localhost:5173/aladin-lite/dist/aladin.umd.cjs' charset='utf-8'></script>
-    <script type='text/javascript'>
-        var aladin;
-        A.init.then(() => {
-            aladin = A.aladin('#aladin-lite-div');
-            aladin.setImageSurvey(aladin.createImageSurvey('tng-test',
-                'sphere projection of data from tng-test', 'http://localhost:5173/surveys/tng-test',
-                'equatorial', 3, {imgFormat: 'jpg'}));
-            aladin.setFoV(180.0);
-        });
-    </script>
+    <script type='module' src="js/jasmine.js"></script>
 </body>
 </html>
