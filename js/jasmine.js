@@ -99,6 +99,8 @@ function change_jasmine_view() {
                     display_dmcloud(sh_id)
                 } else if(cube_side == "gas_temperature") {
                     display_gas_temperature(sh_id)
+                } else if(cube_side == "stars") {
+                    display_stars(sh_id);
                 }
 
             }
@@ -123,6 +125,16 @@ function display_dmcloud(subhalo_id) {
         infotext.innerText = "No data point in this cell."
     } else {
         infotext.innerText = "3D Visualisation of dark matter potential emitted by galaxy " + subhalo_id;
+    }
+}
+
+function display_stars(subhalo_id) {
+    let data_url = cube_url + "/stars/" + subhalo_id + ".ply"
+    pc.draw_point_cloud(data_url)
+    if("" + subhalo_id == "undefined") {
+        infotext.innerText = "No data point in this cell."
+    } else {
+        infotext.innerText = "3D Visualisation of stellar material in galaxy " + subhalo_id;
     }
 }
 
