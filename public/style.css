@@ -43,6 +43,21 @@ body {
     background-color: #626262;
 }
 
+.settings {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.window-setting {
+    display: flex;
+    align-items: center;
+}
+
+.window-setting label {
+    margin-left: 10px;
+}
+
 
 
 #aladin-lite-div {
@@ -57,13 +72,12 @@ body {
 #jasmine-viewer {
     position: fixed;
     top: 0;
-    left: 50vw;
-    width: 50vw;
+    left: 0;
     height: 100vh;
-    float: right;
+    width: 100vw;
 
-    background-size: 50vw auto;
-    background-position: right top;
+    background-size: 100vw auto;
+    background-position: left top;
     background-attachment: fixed;
     background-repeat: no-repeat;
 }
@@ -150,7 +164,7 @@ body {
     left:99px;
 }
 
-input:checked + label {
+.jsm-selection-wrapper input:checked + label {
     order: 2;
     z-index:2;
     background:#424242;
@@ -158,7 +172,7 @@ input:checked + label {
     position:relative;
 }
 
-input:checked + label:after {
+.jsm-selection-wrapper input:checked + label:after {
     content:'';
     width: 0;
     height: 0;
@@ -172,7 +186,7 @@ input:checked + label:after {
     z-index:3;
 }
 
-input:checked + label:before {
+.jsm-selection-wrapper input:checked + label:before {
     position:absolute;
     right:0;
     height: 40px;

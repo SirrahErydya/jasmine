@@ -7,7 +7,7 @@ import {OrbitControls} from "three/addons";
 /**
  * Setup
  */
-const window_x = window.innerWidth*0.5
+const window_x = window.innerWidth
 const window_y = window.innerHeight
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 75,
@@ -61,7 +61,7 @@ window.addEventListener('resize', onWindowResize, false)
 function onWindowResize() {
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
-    const window_x = window.innerWidth*0.5
+    const window_x = window.innerWidth
     const window_y = window.innerHeight
     renderer.setSize(window_x, window_y)
     renderer.render(scene, camera)

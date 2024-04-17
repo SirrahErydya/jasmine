@@ -30,9 +30,20 @@
         <label for="survey_url">Survey URL:</label><br/>
         <input id='survey_url' name="survey-url" type="text" value="http://localhost:5173/surveys/TNG100-h2/"/>
         <br/>
+        <div class="settings">
+            <span>Window Settings</span>
+            <div class="window-setting">
+                <input name="window-settings" type="radio" id="single-modal" value="single-modal"/>
+                <label for="single-modal">One Window per Modal</label>
+            </div>
+            <div class="window-setting">
+                <input name="window-settings" type="radio" id="multi-modal" value="multi-modal" checked/>
+                <label for="single-modal">Multiple Windows per Modal</label>
+            </div>
+        </div>
         <div class="modal-buttons">
             <span>Available Modals</span><br/>
-            <button id="open-jasmine">Jasmine Viewer</button>
+            <!--<button id="open-jasmine">Jasmine Viewer</button>-->
         </div>
     </div>
 

@@ -124,7 +124,11 @@ function  display_image(data_url, subhalo_id, aspect) {
 /** Event listeners **/
 window.addEventListener("message",
     (e) => {
-        alert("Hello, Human Resources? There was an Event!!")
+        if(e.origin == "http://localhost:5173" && e.data) {
+            csv_url = e.data['csv_url']
+            csv_idx = e.data['csv_idx']
+            change_jasmine_view()
+        }
     })
 
 // Jasmine Layer Change
