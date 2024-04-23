@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name='description' content='custom HiPS of tng-test'>
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, height=device-height, initial-scale=1.0, user-scalable=no'>
+    <title>Jasmine</title>
+    <script type='text/javascript' src='https://code.jquery.com/jquery-1.9.1.min.js' charset='utf-8'></script>
+    <!--<script type="module" src="/js/point_cloud.js"></script>-->
+    <link type="text/css" rel="stylesheet" href="/public/style.css">
+</head>
+<body>
+<div id='aladin-lite-div'></div>
+<div class="jsm-selection-wrapper" id="aladin-layer-selector" >
+    <span>Select a layer to project on the sphere:</span>
+    <div class="jsm-select" tabindex="1">
+        <input class="jsm-option-value" name="aladin-layer-radio" type="radio"
+               id="layer-model" value="TNG100-99-model" checked />
+        <label for="layer-model" class="jsm-option">TNG100-99 Model</label>
+        <input class="jsm-option-value" name="aladin-layer-radio" type="radio"
+               id="layer-projection" value="TNG100-99-projection"/>
+        <label for="layer-projection" class="jsm-option">TNG100-99 Morphology Images</label>
+    </div>
+</div>
+
+<!-- Why does it need to be down here? I have no idea... -->
+<div class="menu">
+    <h1>TNG 100-99</h1>
+    <div class="settings">
+        <span>Window Settings</span>
+        <div class="window-setting">
+            <input name="window-settings" type="radio" id="single-modal" value="single-modal"/>
+            <label for="single-modal">One Window per Modal</label>
+        </div>
+        <div class="window-setting">
+            <input name="window-settings" type="radio" id="multi-modal" value="multi-modal" checked/>
+            <label for="single-modal">Multiple Windows per Modal</label>
+        </div>
+    </div>
+    <div class="modal-buttons">
+        <span>Available Modals</span><br/>
+        <!--<button id="open-jasmine">Jasmine Viewer</button>-->
+    </div>
+</div>
+
+<script type='text/javascript' src='http://localhost:5173/aladin-lite/dist/aladin.umd.cjs' charset='utf-8'></script>
+<script type='module' src="/js/aladin-ui.js"></script>
+</body>
+</html>
