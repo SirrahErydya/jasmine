@@ -1,9 +1,11 @@
 {
   "devDependencies": {
-    "vite": "^5.1.4"
+    "vite": "^5.1.4",
+    "vite-plugin-node-polyfills": "^0.21.0"
   },
   "dependencies": {
     "csvtojson": "^2.0.10",
+    "jpickle": "^0.4.1",
     "jsfive": "^0.3.14",
     "three": "^0.162.0"
   }

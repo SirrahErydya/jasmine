@@ -7,6 +7,19 @@ body {
     overflow: hidden;
 }
 
+.landing-page {
+    align-items: center;
+    text-align: center;
+}
+
+.landing-page img {
+    width: 25%;
+}
+
+.landing-page .headline {
+    font-size: 30px;
+}
+
 .menu {
     display: flex;
     flex-direction: column;
@@ -30,7 +43,7 @@ body {
     margin-top: 20px;
 }
 
-.modal-buttons button {
+button {
     background-color: #424242;
     color: white;
     padding: 20px;
@@ -39,7 +52,7 @@ body {
     cursor: pointer;
 }
 
-.modal-buttons button:hover {
+button:hover {
     background-color: #626262;
 }
 

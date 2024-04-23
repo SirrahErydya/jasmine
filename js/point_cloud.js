@@ -24,12 +24,13 @@ container.appendChild( renderer.domElement );
 
 const controls = new OrbitControls(camera, renderer.domElement)
 controls.enableDamping = true
+scene.fog = new THREE.FogExp2( 0x000104, 0.0000675 );
 
 
 
 export function draw_point_cloud(ply_path) {
     clear_scene()
-    let material = new THREE.PointsMaterial({
+    let dot_material = new THREE.PointsMaterial({
         vertexColors: true,
         map: new THREE.TextureLoader().load( "/textures/dot_o.png" ),
         alphaTest: 0.5,
@@ -37,9 +38,18 @@ export function draw_point_cloud(ply_path) {
         opacity: 1.,
         size: 0.1
     })
+    let neb_material = new THREE.PointsMaterial({
+        vertexColors: true,
+        map: new THREE.TextureLoader().load( "/textures/neb.png" ),
+        transparent: true,
+        opacity: 0.1,
+        size: 15.,
+        alpha: true,
+        alphaTest: 0.05,
+    })
     let loader = new PLYLoader();
     loader.load(ply_path, function (geometry) {
-        let mesh = new THREE.Points(geometry, material)
+        let mesh = new THREE.Points(geometry, dot_material)
         scene.add(mesh)
     });
     animate()

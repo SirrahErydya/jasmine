@@ -1,7 +1,7 @@
 import {HealpixIndex} from "../aladin-lite/src/js/libs/healpix";
 import {func} from "three/addons/nodes/code/FunctionNode";
 
-let survey_url = document.getElementById('survey_url').value
+let survey_url = window.location
 let hierarchy = 1
 let window_mode = document.querySelector('input[name="window-settings"]:checked').value;
 let jasmine_window;
@@ -32,12 +32,8 @@ A.init.then(() => {
     let projection_survey = aladin.createImageSurvey('TNG100-99-projection',
         'TNG100-99 Morphology Images', projection_url,
         'equatorial', 3, {imgFormat: 'jpg'})
-    let prog =  A.catalogHiPS(cat_url, {name: 'Data Points', sourceSize: 8, raField: 'ra', decField: 'dec'});
-    let catalog = A.catalogFromURL('http://localhost:5173/surveys/TNG100/catalog.vot', {sourceSize:10, onClick: 'showPopup', color: 'cyan', shape: 'circle', name: 'TNG100'});
-    aladin.addCatalog(catalog);
     aladin.setOverlayImageLayer(model_survey);
     aladin.setBaseImageLayer(projection_survey);
-    aladin.addCatalog(prog);
     aladin.setFoV(180.0);
     /*
     aladin.on('mouseMove', function (e) {
@@ -55,6 +51,7 @@ A.init.then(() => {
 function choose_datapoint(event) {
     let order = aladin.view.wasm.getNOrder()
     let radec = aladin.pix2world(event.x, event.y)
+    alert(radec)
     let theta =  Math.PI / 2. - radec[1] / 180. * Math.PI;
     let phi = radec[0] / 180. * Math.PI
     let top_index = new HealpixIndex(2**order)
@@ -83,8 +80,10 @@ aladin_div.addEventListener("mouseup", function(e) {
                 'http://localhost:5173/modals/jasmine-viewer.html', '_blank',
                 'location=yes,height=1000,width=1000,top=0,left=1500,scrollbars=no');
             jasmine_window.addEventListener('load', e => jasmine_window.postMessage(data));
+            jasmine_window.addEventListener('close', e => jasmine_window = null)
         } else {
             // Just JavaScript being JavaScript I guess...
+            alert(data['csv_url'])
             jasmine_window.postMessage(data);
         }
 
