@@ -51,7 +51,6 @@ A.init.then(() => {
 function choose_datapoint(event) {
     let order = aladin.view.wasm.getNOrder()
     let radec = aladin.pix2world(event.x, event.y)
-    alert(radec)
     let theta =  Math.PI / 2. - radec[1] / 180. * Math.PI;
     let phi = radec[0] / 180. * Math.PI
     let top_index = new HealpixIndex(2**order)
@@ -62,6 +61,7 @@ function choose_datapoint(event) {
         let nested_index = new HealpixIndex(2**(order+hierarchy))
         nested_index.init()
         csv_idx = nested_index.ang2pix_nest(theta, phi) - 4*top_pixel
+        alert("Order: " + order + "; Top Pixel: " + top_pixel + "; CSV Idx: " + csv_idx)
     }
     let csv_url = cat_url + '/Norder'+ order + '/Dir0/Npix' + top_pixel + '.tsv';
     return {
