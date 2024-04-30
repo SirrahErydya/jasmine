@@ -10,7 +10,7 @@ let moved_while_pressed = false;
 let csv_url = ""
 let csv_idx = 0
 
-const survey_url = 'http://localhost:5173/surveys/TNG100-h2/'
+const survey_url = 'http://localhost:5173/surveys/TNG100/'
 const model_url = survey_url + 'model'
 const projection_url = survey_url + 'projection'
 const cat_url = survey_url + 'interaction_catalog'
