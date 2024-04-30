@@ -28,6 +28,12 @@ body {
     left: 0;
     width: 15vw;
     padding: 10px;
+    height: 100vh;
+
+    background-color: rgba(0,0,0,0.5);
+    border-style: solid;
+    border-color: white;
+    border-radius: 2px;
 }
 
 .menu input {
@@ -76,10 +82,18 @@ button:hover {
 #aladin-lite-div {
     position: fixed;
     top: 0;
-    right: 0;
-    width:83vw;
+    left: 0;
+    width:100vw;
     height:100vh;
     border: none;
+}
+
+/* API call does not work */
+.aladin-location {
+    display: none;
+}
+.aladin-fov {
+    display: none;
 }
 
 #jasmine-viewer {
@@ -206,5 +220,19 @@ button:hover {
     width: 40px;
     content: '';
     background:#424242;
+}
+
+#jsm-feature-selector-gas, #jsm-feature-selector-dm, #jsm-feature-selector-stars {
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    bottom: 50vh;
+    border-style: solid;
+    border-color: white;
+    border-radius: 2px;
+    background-color: rgba(0,0,0,0.5);
 }
 

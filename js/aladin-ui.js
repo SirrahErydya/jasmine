@@ -24,7 +24,11 @@ A.init.then(() => {
         "showGotoControl": false,
         "showLayersControl": false,
         "showProjectionControl": false,
-        "showFullscreenControl": false
+        "showFullscreenControl": false,
+        "showFrame": false,
+        "showCooLocation": false,
+        "showFov": false,
+        "fov": 360
     });
     let model_survey = aladin.createImageSurvey('TNG100-99-model',
         'TNG100-99 Model', model_url,
@@ -32,9 +36,8 @@ A.init.then(() => {
     let projection_survey = aladin.createImageSurvey('TNG100-99-projection',
         'TNG100-99 Morphology Images', projection_url,
         'equatorial', 3, {imgFormat: 'jpg'})
-    aladin.setOverlayImageLayer(model_survey);
-    aladin.setBaseImageLayer(projection_survey);
-    aladin.setFoV(180.0);
+    let survey_to_show = window_mode = document.querySelector('input[name="aladin-layer-radio"]:checked').value;
+    aladin.setBaseImageLayer(survey_to_show);
     /*
     aladin.on('mouseMove', function (e) {
         let order = aladin.view.wasm.getNOrder()
@@ -61,7 +64,7 @@ function choose_datapoint(event) {
         let nested_index = new HealpixIndex(2**(order+hierarchy))
         nested_index.init()
         csv_idx = nested_index.ang2pix_nest(theta, phi) - 4*top_pixel
-        alert("Order: " + order + "; Top Pixel: " + top_pixel + "; CSV Idx: " + csv_idx)
+        //alert("Order: " + order + "; Top Pixel: " + top_pixel + "; CSV Idx: " + csv_idx)
     }
     let csv_url = cat_url + '/Norder'+ order + '/Dir0/Npix' + top_pixel + '.tsv';
     return {
@@ -72,18 +75,17 @@ function choose_datapoint(event) {
 
 
 /** Event listeners **/
-aladin_div.addEventListener("mouseup", function(e) {
-    if(e.button === 2) {
-        let data = choose_datapoint(e)
-        if (!jasmine_window || window_mode == "multi-modal") {
+aladin_div.addEventListener("mouseup", function(ev) {
+    if(ev.button === 2) {
+        let data = choose_datapoint(ev)
+        if (!jasmine_window || !jasmine_window.opener || jasmine_window.opener.closed ||
+            window_mode == "multi-modal" ) {
             jasmine_window = window.open(
                 'http://localhost:5173/modals/jasmine-viewer.html', '_blank',
                 'location=yes,height=1000,width=1000,top=0,left=1500,scrollbars=no');
             jasmine_window.addEventListener('load', e => jasmine_window.postMessage(data));
-            jasmine_window.addEventListener('close', e => jasmine_window = null)
         } else {
             // Just JavaScript being JavaScript I guess...
-            alert(data['csv_url'])
             jasmine_window.postMessage(data);
         }
 

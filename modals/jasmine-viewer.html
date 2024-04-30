@@ -30,20 +30,68 @@
     <span>Select a data aspect to inspect:</span>
     <div class="jsm-select" tabindex="1">
         <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
-               id="morphology" value="morphology" checked />
-        <label for="morphology" class="jsm-option">Morphology Image</label>
+               id="mock" value="mock" checked />
+        <label for="mock" class="jsm-option">Mock Image</label>
         <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
                id="gascloud" value="gascloud" />
-        <label for="gascloud" class="jsm-option">Gas Potential</label>
+        <label for="gascloud" class="jsm-option">Gas</label>
         <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
                id="stars" value="stars" />
         <label for="stars" class="jsm-option">Stars</label>
         <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
                id="darkmatter" value="darkmatter" />
         <label for="darkmatter" class="jsm-option">Dark Matter</label>
-        <input class="jsm-option-value" name="jasmine-layer-radio" type="radio"
-               id="gas_temperature" value="gas_temperature" />
-        <label for="gas_temperature" class="jsm-option">Gas Temperature</label>
+    </div>
+</div>
+<div id="jsm-feature-selector-gas">
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-gas-radio" type="radio"
+               id="gas-temperature" value="temperature" />
+        <label for="gas-temperature">Temperature</label>
+    </div>
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-gas-radio" type="radio"
+               id="gas-potential" value="potential"  checked/>
+        <label for="gas-potential">Potential</label>
+    </div>
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-gas-radio" type="radio"
+               id="gas-metallicity" value="metallicity"  />
+        <label for="gas-metallicity">Metallicity</label>
+    </div>
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-gas-radio" type="radio"
+               id="gas-velocity" value="velocity"  />
+        <label for="gas-velocity">Velocity</label>
+    </div>
+</div>
+<div id="jsm-feature-selector-dm">
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-dm-radio" type="radio"
+               id="dm-potential" value="potential"  checked/>
+        <label for="dm-potential">Potential</label>
+    </div>
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-dm-radio" type="radio"
+               id="dm-density" value="density"  />
+        <label for="dm-density">Density</label>
+    </div>
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-dm-radio" type="radio"
+               id="dm-velocity" value="velocity"  />
+        <label for="dm-velocity">Velocity</label>
+    </div>
+</div>
+<div id="jsm-feature-selector-stars">
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-stars-radio" type="radio"
+               id="star-masses" value="mass" checked/>
+        <label for="star-masses">Masses</label>
+    </div>
+    <div class="jsm-feature">
+        <input class='jsm-feature-radio' name="jasmine-stars-radio" type="radio"
+               id="stars-metallicity" value="metallicity"  />
+        <label for="stars-metallicity">Metallicity</label>
     </div>
 </div>
 <div  id="infobox" class="info"></div>

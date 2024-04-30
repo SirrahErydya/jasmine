@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PLYLoader } from 'three/addons/loaders/PLYLoader.js'
+import { PCDLoader } from 'three/addons/loaders/PCDLoader.js'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import {OrbitControls} from "three/addons";
 
@@ -28,7 +28,7 @@ scene.fog = new THREE.FogExp2( 0x000104, 0.0000675 );
 
 
 
-export function draw_point_cloud(ply_path) {
+export function draw_point_cloud(cube_path, component, feature, subhalo_id) {
     clear_scene()
     let dot_material = new THREE.PointsMaterial({
         vertexColors: true,
@@ -47,10 +47,12 @@ export function draw_point_cloud(ply_path) {
         alpha: true,
         alphaTest: 0.05,
     })
-    let loader = new PLYLoader();
-    loader.load(ply_path, function (geometry) {
-        let mesh = new THREE.Points(geometry, dot_material)
-        scene.add(mesh)
+    let data_url = cube_path + "/particle_clouds/" + component + "/" + feature + "/" + subhalo_id + ".pcd"
+    console.log(data_url)
+    let loader = new PCDLoader();
+    loader.load(data_url, function (points) {
+        points.material = dot_material
+        scene.add(points)
     });
     animate()
 }
