@@ -24,6 +24,11 @@ const jasmine_div = document.getElementById('jasmine-viewer')
 const aladin_layer_radios = document.getElementsByName("aladin-layer-radio")
 const jsm_layer_radios = document.getElementsByName("jasmine-layer-radio")
 let active_jasmine_radio = document.querySelector('input[name="jasmine-layer-radio"]:checked');
+const jsm_gas_features_div = document.getElementById('jsm-feature-selector-gas')
+const jsm_dm_features_div = document.getElementById('jsm-feature-selector-dm')
+const jsm_stars_features_div = document.getElementById('jsm-feature-selector-stars')
+const jsm_feature_radios = document.getElementsByClassName('jsm-feature-radio')
+
 
 
 
@@ -40,13 +45,9 @@ A.init.then(() => {
     let projection_survey = aladin.createImageSurvey('TNG100-99-projection',
         'TNG100-99 Morphology Images', projection_url,
         'equatorial', 3, {imgFormat: 'jpg'})
-    let prog =  A.catalogHiPS(cat_url, {name: 'Data Points', sourceSize: 8, raField: 'ra', decField: 'dec'});
-    let catalog = A.catalogFromURL('http://localhost:5173/surveys/TNG100/catalog.vot', {sourceSize:10, onClick: 'showPopup', color: 'cyan', shape: 'circle', name: 'TNG100'});
-    aladin.addCatalog(catalog);
-    aladin.setOverlayImageLayer(model_survey);
-    aladin.setBaseImageLayer(projection_survey);
-    aladin.addCatalog(prog);
     aladin.setFoV(180.0);
+    let survey_to_show = document.querySelector('input[name="aladin-layer-radio"]:checked').value;
+    aladin.setBaseImageLayer(survey_to_show);
     /*
     aladin.on('mouseMove', function (e) {
         let order = aladin.view.wasm.getNOrder()
@@ -81,25 +82,33 @@ function choose_datapoint(event) {
     change_jasmine_view()
 }
 
+function hide_all_feature_divs() {
+    jsm_gas_features_div.style = "display: none;"
+    jsm_dm_features_div.style = "display: none;"
+    jsm_stars_features_div.style = "display: none;"
+}
 
 function change_jasmine_view() {
     jasmine_div.style.backgroundImage = "";
+    let active_jasmine_radio = document.querySelector('input[name="jasmine-layer-radio"]:checked');
     let cube_side = active_jasmine_radio.value;
     pc.clear_scene()
+    hide_all_feature_divs()
     fetch(csv_url).then(response => response.text())
         .then(
             data => {
                 let rows = data.split('\n')
                 let sh_id = rows[csv_idx+1].split('\t')[1]
                 if(cube_side == "gascloud") {
+                    jsm_gas_features_div.style="display: flex;"
                     display_gascloud(sh_id)
-                } else if(cube_side == "morphology") {
-                    display_morphology(sh_id)
+                } else if(cube_side == "mock") {
+                    display_mock(sh_id)
                 } else if(cube_side == "darkmatter") {
+                    jsm_dm_features_div.style="display: flex;"
                     display_dmcloud(sh_id)
-                } else if(cube_side == "gas_temperature") {
-                    display_gas_temperature(sh_id)
                 } else if(cube_side == "stars") {
+                    jsm_stars_features_div.style="display: flex;"
                     display_stars(sh_id);
                 }
 
@@ -109,18 +118,18 @@ function change_jasmine_view() {
 
 /* Display functions */
 function display_gascloud(subhalo_id) {
-    let data_url = cube_url + "/gas_pointclouds/" + subhalo_id + ".ply"
-    pc.draw_point_cloud(data_url)
+    let feature = document.querySelector('input[name="jasmine-gas-radio"]:checked').value;
+    pc.draw_point_cloud(cube_url, 'gas', feature, subhalo_id)
     if("" + subhalo_id == "undefined") {
         infotext.innerText = "No data point in this cell."
     } else {
-        infotext.innerText = "3D Visualisation of gas potential emitted by galaxy " + subhalo_id;
+        infotext.innerText = "3D Visualisation of gas emitted by galaxy " + subhalo_id;
     }
 }
 
 function display_dmcloud(subhalo_id) {
-    let data_url = cube_url + "/dm_pointclouds/" + subhalo_id + ".ply"
-    pc.draw_point_cloud(data_url)
+    let feature = document.querySelector('input[name="jasmine-dm-radio"]:checked').value;
+    pc.draw_point_cloud(cube_url, 'dm', feature, subhalo_id)
     if("" + subhalo_id == "undefined") {
         infotext.innerText = "No data point in this cell."
     } else {
@@ -129,8 +138,8 @@ function display_dmcloud(subhalo_id) {
 }
 
 function display_stars(subhalo_id) {
-    let data_url = cube_url + "/stars/" + subhalo_id + ".ply"
-    pc.draw_point_cloud(data_url)
+    let feature = document.querySelector('input[name="jasmine-stars-radio"]:checked').value;
+    pc.draw_point_cloud(cube_url, 'stars', feature, subhalo_id)
     if("" + subhalo_id == "undefined") {
         infotext.innerText = "No data point in this cell."
     } else {
@@ -138,17 +147,10 @@ function display_stars(subhalo_id) {
     }
 }
 
-function display_morphology(subhalo_id) {
-    display_image(cube_url + "/morphology/" + subhalo_id + ".jpg", subhalo_id, "Morphology")
+function display_mock(subhalo_id) {
+    display_image(cube_url + "/mock/" + subhalo_id + ".jpg", subhalo_id, "Mock Image")
 }
 
-function display_dark_matter(subhalo_id) {
-    display_image(cube_url + "/dark_matter_fields/" + subhalo_id + ".png", subhalo_id, "Dark Matter")
-}
-
-function display_gas_temperature(subhalo_id) {
-    display_image(cube_url + "/gas_temperature_fields/" + subhalo_id + ".png", subhalo_id, "Gas Temperature")
-}
 
 function  display_image(data_url, subhalo_id, aspect) {
     jasmine_div.style.backgroundImage = "url('" + data_url + "')";
@@ -162,9 +164,9 @@ function  display_image(data_url, subhalo_id, aspect) {
 /** Event listeners **/
 
 // Add an event for the change of the Jasmine view - On right click
-aladin_div.addEventListener("mouseup", function(e) {
-    if(e.button === 2) {
-        choose_datapoint(e)
+aladin_div.addEventListener("mouseup", function(ev) {
+    if(ev.button === 2) {
+        choose_datapoint(ev)
     }
 })
 
@@ -180,6 +182,13 @@ for(let i=0; i < aladin_layer_radios.length; i++) {
 for(let i=0; i < jsm_layer_radios.length; i++) {
     jsm_layer_radios[i].addEventListener('change', function(e) {
         active_jasmine_radio = this
+        change_jasmine_view()
+    })
+}
+
+// Jasmine Feature Change
+for(let i=0; i < jsm_feature_radios.length; i++) {
+    jsm_feature_radios[i].addEventListener('change', function(e) {
         change_jasmine_view()
     })
 }

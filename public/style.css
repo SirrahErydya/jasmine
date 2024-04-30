@@ -115,13 +115,13 @@ body {
     pointer-events:all;
 }
 
-input {
+.jsm-selection-wrapper input {
     opacity:1;
     position:absolute;
     left:99px;
 }
 
-input:checked + label {
+.jsm-selection-wrapper input:checked + label {
     order: 2;
     z-index:2;
     background:#424242;
@@ -129,7 +129,7 @@ input:checked + label {
     position:relative;
 }
 
-input:checked + label:after {
+.jsm-selection-wrapper input:checked + label:after {
     content:'';
     width: 0;
     height: 0;
@@ -143,12 +143,26 @@ input:checked + label:after {
     z-index:3;
 }
 
-input:checked + label:before {
+.jsm-selection-wrapper input:checked + label:before {
     position:absolute;
     right:0;
     height: 40px;
     width: 40px;
     content: '';
     background:#424242;
+}
+
+#jsm-feature-selector-gas, #jsm-feature-selector-dm, #jsm-feature-selector-stars {
+    padding: 10px;
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    z-index: 2;
+    left: 50vw;
+    bottom: 50vh;
+    border-style: solid;
+    border-color: white;
+    border-radius: 2px;
+    background-color: rgba(0,0,0,0.5);
 }
 

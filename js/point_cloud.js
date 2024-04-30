@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { PLYLoader } from 'three/addons/loaders/PLYLoader.js'
+import { PCDLoader } from 'three/addons/loaders/PCDLoader.js'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import {OrbitControls} from "three/addons";
 
@@ -27,9 +27,9 @@ controls.enableDamping = true
 
 
 
-export function draw_point_cloud(ply_path) {
+export function draw_point_cloud(cube_path, component, feature, subhalo_id) {
     clear_scene()
-    let material = new THREE.PointsMaterial({
+    let dot_material = new THREE.PointsMaterial({
         vertexColors: true,
         map: new THREE.TextureLoader().load( "/textures/dot_o.png" ),
         alphaTest: 0.5,
@@ -37,10 +37,20 @@ export function draw_point_cloud(ply_path) {
         opacity: 1.,
         size: 0.1
     })
-    let loader = new PLYLoader();
-    loader.load(ply_path, function (geometry) {
-        let mesh = new THREE.Points(geometry, material)
-        scene.add(mesh)
+    let neb_material = new THREE.PointsMaterial({
+        vertexColors: true,
+        map: new THREE.TextureLoader().load( "/textures/neb.png" ),
+        transparent: true,
+        opacity: 0.1,
+        size: 15.,
+        alpha: true,
+        alphaTest: 0.05,
+    })
+    let data_url = cube_path + "/particle_clouds/" + component + "/" + feature + "/" + subhalo_id + ".pcd"
+    let loader = new PCDLoader();
+    loader.load(data_url, function (points) {
+        points.material = dot_material
+        scene.add(points)
     });
     animate()
 }
