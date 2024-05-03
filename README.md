@@ -17,7 +17,7 @@ This project is currently under development. We provide a demo version to give a
 * Interfaces to common data analysis tools from astronomy
 
 ## Demo setup
-1. Download an example survey [here]().
+1. Download an example survey [here](https://drive.google.com/file/d/1NuTxCRF9JetEjGNFhERXDurtJO56h8lJ/view?usp=drive_link).
 2. Clone the repository and checkout the [webdemo](https://github.com/SirrahErydya/jasmine/tree/webdemo) branch
 3. Navigate into the top folder of the repository and create a folder named *surveys*
 4. Paste the example survey folder into *surveys*
