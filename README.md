@@ -20,7 +20,7 @@ This project is currently under development. We provide a demo version to give a
 1. Download an example survey [here](https://drive.google.com/file/d/1NuTxCRF9JetEjGNFhERXDurtJO56h8lJ/view?usp=drive_link).
 2. Clone the repository and checkout the [webdemo](https://github.com/SirrahErydya/jasmine/tree/webdemo) branch
 3. Navigate into the top folder of the repository and clone the [aladin-lite submodule](https://github.com/SirrahErydya/aladin-lite/tree/develop)
-4. Install `aladin lite` according to the instructions given bzy the Readme file.
+4. Install `aladin lite` according to the instructions given by the Readme file.
 5. Navigate back to the `jasmine` top folder and create a folder named *surveys*
 6. Paste the example survey folder into *surveys*
 7. Open a terminal inside the top folder and install all `Node.js` requirements via `npm install`
