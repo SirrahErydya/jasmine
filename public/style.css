@@ -97,16 +97,24 @@ button:hover {
 }
 
 #jasmine-viewer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 100vw;
-
     background-size: 100vw auto;
     background-position: left top;
     background-attachment: fixed;
     background-repeat: no-repeat;
+}
+
+#jasmine-viewer, #jasmine-canvas{
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+#jasmine-canvas {
+    display: none;
+    background-color: white;
+    z-index: 10;
 }
 
 .info {

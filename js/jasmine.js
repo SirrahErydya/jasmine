@@ -9,7 +9,7 @@ let aladin;
 let csv_url = ""
 let csv_idx = 0
 
-const survey_url = 'http://localhost:5173/surveys/TNG100-h2/'
+const survey_url = 'http://localhost:5173/surveys/TNG100/'
 const model_url = survey_url + 'model'
 const projection_url = survey_url + 'projection'
 const cat_url = survey_url + 'interaction_catalog'
@@ -24,6 +24,13 @@ const jsm_gas_features_div = document.getElementById('jsm-feature-selector-gas')
 const jsm_dm_features_div = document.getElementById('jsm-feature-selector-dm')
 const jsm_stars_features_div = document.getElementById('jsm-feature-selector-stars')
 const jsm_feature_radios = document.getElementsByClassName('jsm-feature-radio')
+const jsm_canvas = document.getElementById('jasmine-canvas')
+
+/* Drawing */
+let jsm_context;
+let stroke_color = "red"
+let stroke_width = 10
+let cursor_position = {x: 0, y: 0};
 
 
 
@@ -46,15 +53,12 @@ function change_jasmine_view() {
                 let rows = data.split('\n')
                 let sh_id = rows[csv_idx+1].split('\t')[1]
                 if(cube_side == "gascloud") {
-                    jsm_gas_features_div.style="display: flex;"
                     display_gascloud(sh_id)
                 } else if(cube_side == "mock") {
                     display_mock(sh_id)
                 } else if(cube_side == "darkmatter") {
-                    jsm_dm_features_div.style="display: flex;"
                     display_dmcloud(sh_id)
                 } else if(cube_side == "stars") {
-                    jsm_stars_features_div.style="display: flex;"
                     display_stars(sh_id);
                 }
 
@@ -64,6 +68,8 @@ function change_jasmine_view() {
 
 /* Display functions */
 function display_gascloud(subhalo_id) {
+    jsm_gas_features_div.style="display: flex;"
+    jsm_context = jsm_canvas.getContext("3d")
     let feature = document.querySelector('input[name="jasmine-gas-radio"]:checked').value;
     pc.draw_point_cloud(cube_url, 'gas', feature, subhalo_id)
     if("" + subhalo_id == "undefined") {
@@ -74,6 +80,8 @@ function display_gascloud(subhalo_id) {
 }
 
 function display_dmcloud(subhalo_id) {
+    jsm_context = jsm_canvas.getContext("3d")
+    jsm_dm_features_div.style="display: flex;"
     let feature = document.querySelector('input[name="jasmine-dm-radio"]:checked').value;
     pc.draw_point_cloud(cube_url, 'dm', feature, subhalo_id)
     if("" + subhalo_id == "undefined") {
@@ -84,6 +92,8 @@ function display_dmcloud(subhalo_id) {
 }
 
 function display_stars(subhalo_id) {
+    jsm_context = jsm_canvas.getContext("3d")
+    jsm_dm_features_div.style="display: flex;"
     let feature = document.querySelector('input[name="jasmine-stars-radio"]:checked').value;
     pc.draw_point_cloud(cube_url, 'stars', feature, subhalo_id)
     if("" + subhalo_id == "undefined") {
@@ -94,6 +104,7 @@ function display_stars(subhalo_id) {
 }
 
 function display_mock(subhalo_id) {
+    jsm_context = jsm_canvas.getContext("2d")
     display_image(cube_url + "/mock/" + subhalo_id + ".jpg", subhalo_id, "Mock Image")
 }
 
@@ -107,7 +118,39 @@ function  display_image(data_url, subhalo_id, aspect) {
     }
 }
 
-/** Event listeners **/
+/**
+ * Drawing
+ */
+function draw(event) {
+
+    if (event.buttons !== 1)  {
+        return;
+    }
+    console.log(cursor_position)
+
+    jsm_context.beginPath(); // begin
+
+    jsm_context.lineWidth = stroke_width;
+    jsm_context.lineCap = 'round';
+    jsm_context.strokeStyle = stroke_color;
+
+    jsm_context.moveTo(cursor_position.x, cursor_position.y); // from
+    set_cursor_position(event);
+    jsm_context.lineTo(cursor_position.x, cursor_position.y); // to
+
+    jsm_context.stroke(); // draw it!
+}
+
+function set_cursor_position(event) {
+    let rect = jsm_canvas.getBoundingClientRect();
+    cursor_position.x = event.clientX - rect.left;
+    cursor_position.y = event.clientY - rect.top;
+}
+
+
+/**
+ * Event listeners
+ */
 window.addEventListener("message",
     (e) => {
         if(e.origin === "http://localhost:5173" && e.data) {
@@ -129,3 +172,8 @@ for(let i=0; i < jsm_feature_radios.length; i++) {
         change_jasmine_view()
     })
 }
+
+// Draw Feedback
+jsm_canvas.addEventListener("mousemove", draw);
+jsm_canvas.addEventListener("mousedown", set_cursor_position);
+jsm_canvas.addEventListener("mouseenter", set_cursor_position);

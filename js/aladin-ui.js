@@ -36,7 +36,7 @@ A.init.then(() => {
     let projection_survey = aladin.createImageSurvey('TNG100-99-projection',
         'TNG100-99 Morphology Images', projection_url,
         'equatorial', 3, {imgFormat: 'jpg'})
-    let survey_to_show = window_mode = document.querySelector('input[name="aladin-layer-radio"]:checked').value;
+    let survey_to_show = document.querySelector('input[name="aladin-layer-radio"]:checked').value;
     aladin.setBaseImageLayer(survey_to_show);
     /*
     aladin.on('mouseMove', function (e) {
