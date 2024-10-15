@@ -30,14 +30,14 @@ A.init.then(() => {
         "showFov": false,
         "fov": 360
     });
-    let model_survey = aladin.createImageSurvey('TNG100-99-model',
+    let model_survey = aladin.createImageSurvey('model',
         'TNG100-99 Model', model_url,
         'equatorial', 3, {imgFormat: 'jpg'})
-    let projection_survey = aladin.createImageSurvey('TNG100-99-projection',
+    let projection_survey = aladin.createImageSurvey('projection',
         'TNG100-99 Morphology Images', projection_url,
         'equatorial', 3, {imgFormat: 'jpg'})
     let survey_to_show = document.querySelector('input[name="aladin-layer-radio"]:checked').value;
-    aladin.setBaseImageLayer(survey_to_show);
+    aladin.setBaseImageLayer('model');
     /*
     aladin.on('mouseMove', function (e) {
         let order = aladin.view.wasm.getNOrder()

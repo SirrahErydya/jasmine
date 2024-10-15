@@ -47,7 +47,7 @@ export function draw_point_cloud(cube_path, component, feature, subhalo_id) {
         alpha: true,
         alphaTest: 0.05,
     })
-    let data_url = cube_path + "/particle_clouds/" + component + "/" + feature + "/" + subhalo_id + ".pcd"
+    let data_url = cube_path + "/3d/" + component + "/" + feature + "/" + subhalo_id + ".pcd"
     console.log(data_url)
     let loader = new PCDLoader();
     loader.load(data_url, function (points) {

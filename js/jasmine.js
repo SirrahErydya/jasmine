@@ -9,7 +9,7 @@ let aladin;
 let csv_url = ""
 let csv_idx = 0
 
-const survey_url = 'http://localhost:5173/surveys/TNG100/'
+const survey_url = 'http://localhost:5173/surveys/TNG100-99/'
 const model_url = survey_url + 'model'
 const projection_url = survey_url + 'projection'
 const cat_url = survey_url + 'interaction_catalog'
@@ -105,7 +105,7 @@ function display_stars(subhalo_id) {
 
 function display_mock(subhalo_id) {
     jsm_context = jsm_canvas.getContext("2d")
-    display_image(cube_url + "/mock/" + subhalo_id + ".jpg", subhalo_id, "Mock Image")
+    display_image(cube_url + "/2d/mock/" + subhalo_id + ".jpg", subhalo_id, "Mock Image")
 }
 
 
